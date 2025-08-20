@@ -57,11 +57,7 @@ async function send() {
 </template>
 ```
 
-> **💡 Pro Tip**: Consider creating reusable input components to display validation errors automatically. This eliminates repetition and ensures consistent styling across your forms. For example:
->
-> ```vue
-> <Input v-model="data.subject" :issues="issues.subject" />
-> ```
+**💡 Pro Tip**: Consider creating reusable input components to display validation errors automatically. This eliminates repetition and ensures consistent styling across your forms.
 
 ## API
 
