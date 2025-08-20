@@ -1,0 +1,38 @@
+{
+  "name": "validation-composable",
+  "description": "Lightweight validation for Vue — just 80 lines of code.",
+  "type": "module",
+  "version": "0.1.4",
+  "license": "MIT",
+  "keywords": [
+    "validation",
+    "vue"
+  ],
+  "source": "./src/index.ts",
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "require": "./dist/index.cjs",
+    "default": "./dist/index.modern.js"
+  },
+  "main": "./dist/index.cjs",
+  "umd:main": "./dist/index.umd.js",
+  "module": "./dist/index.module.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "format": "prettier . --write",
+    "build": "microbundle",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@standard-schema/spec": "^1.0.0"
+  },
+  "peerDependencies": {
+    "vue": "^3.3.0"
+  },
+  "devDependencies": {
+    "microbundle": "^0.15.1",
+    "prettier": "^3.6.2",
+    "vitest": "^3.2.4",
+    "zod": "^4.0.17"
+  }
+}
