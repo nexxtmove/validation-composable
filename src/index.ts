@@ -4,9 +4,7 @@ import { reactive, watch, unref, type MaybeRef } from 'vue'
 type Data = Record<string, unknown>
 
 type Issues<T> = {
-  [Key in keyof T]?: T[Key] extends object
-    ? Issues<T[Key]>
-    : StandardSchemaV1.Issue[]
+  [Key in keyof T]?: T[Key] extends object ? Issues<T[Key]> : string[]
 }
 
 export function useValidation<T extends Data>(
@@ -48,7 +46,7 @@ export function useValidation<T extends Data>(
       // Add the issue to the current nested object
       const finalKey = String(finalProperty)
       current[finalKey] ??= []
-      current[finalKey].push(issue)
+      current[finalKey].push(issue.message)
     }
 
     return false

@@ -49,10 +49,10 @@ async function send() {
 <template>
   <form @submit="send">
     <input v-model="data.subject" :class="{ 'border-red': issues.subject }" />
-    <span v-if="issues.subject">{{ issues.subject[0].message }}</span>
+    <span v-if="issues.subject">{{ issues.subject[0] }}</span>
 
     <textarea v-model="data.body" :class="{ 'border-red': issues.body }" />
-    <span v-if="issues.body">{{ issues.body[0].message }}</span>
+    <span v-if="issues.body">{{ issues.body[0] }}</span>
   </form>
 </template>
 ```
@@ -66,5 +66,5 @@ const { validate, issues, clearIssues } = useValidation(data, schema)
 ```
 
 - `validate()`: validates and fills `issues`; returns true when valid
-- `issues`: reactive object that mirrors your data; failing fields contain arrays of issues with `{ message, path }`
+- `issues`: reactive object that mirrors your data; failing fields contain arrays of error messages
 - `clearIssues()`: clears all issues

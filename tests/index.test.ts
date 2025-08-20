@@ -483,26 +483,22 @@ describe('useValidation', () => {
 
       // Check that custom error messages are captured
       expect(issues.subject).toBeDefined()
-      expect(issues.subject?.[0].message).toBe('Subject is required')
+      expect(issues.subject?.[0]).toBe('Subject is required')
 
       expect(issues.email).toBeDefined()
-      expect(issues.email?.[0].message).toBe(
-        'Please enter a valid email address',
-      )
+      expect(issues.email?.[0]).toBe('Please enter a valid email address')
 
       expect(issues.age).toBeDefined()
-      expect(issues.age?.[0].message).toBe('You must be at least 18 years old')
+      expect(issues.age?.[0]).toBe('You must be at least 18 years old')
 
       expect(issues.password).toBeDefined()
       expect(issues.password?.length).toBeGreaterThan(0)
 
       // Check that multiple error messages are captured for password
-      const passwordMessages =
-        issues.password?.map((issue) => issue.message) || []
-      expect(passwordMessages).toContain(
+      expect(issues.password).toContain(
         'Password must be at least 8 characters',
       )
-      expect(passwordMessages).toContain(
+      expect(issues.password).toContain(
         'Password must contain an uppercase letter',
       )
     })
@@ -542,16 +538,12 @@ describe('useValidation', () => {
       expect(isValid).toBe(false)
 
       // Check nested error messages
-      expect(issues.user?.profile?.firstName?.[0].message).toBe(
+      expect(issues.user?.profile?.firstName?.[0]).toBe(
         'First name is required',
       )
-      expect(issues.user?.profile?.lastName?.[0].message).toBe(
-        'Last name is required',
-      )
-      expect(issues.user?.contact?.email?.[0].message).toBe(
-        'Invalid email format',
-      )
-      expect(issues.user?.contact?.phone?.[0].message).toBe(
+      expect(issues.user?.profile?.lastName?.[0]).toBe('Last name is required')
+      expect(issues.user?.contact?.email?.[0]).toBe('Invalid email format')
+      expect(issues.user?.contact?.phone?.[0]).toBe(
         'Phone number must be at least 10 digits',
       )
     })
@@ -608,12 +600,12 @@ describe('useValidation', () => {
 
       // Should have default Zod error messages
       expect(issues.email).toBeDefined()
-      expect(issues.email?.[0].message).toBeDefined()
-      expect(typeof issues.email?.[0].message).toBe('string')
+      expect(issues.email?.[0]).toBeDefined()
+      expect(typeof issues.email?.[0]).toBe('string')
 
       expect(issues.age).toBeDefined()
-      expect(issues.age?.[0].message).toBeDefined()
-      expect(typeof issues.age?.[0].message).toBe('string')
+      expect(issues.age?.[0]).toBeDefined()
+      expect(typeof issues.age?.[0]).toBe('string')
     })
   })
 
