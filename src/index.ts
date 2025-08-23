@@ -1,14 +1,21 @@
 import type { StandardSchemaV1 } from '@standard-schema/spec'
-import { reactive, watch, unref, type MaybeRef } from 'vue'
+import { reactive, watch, toValue, type MaybeRefOrGetter } from 'vue'
 
 type Data = Record<string, unknown>
 
+type Combine<
+  T,
+  K extends PropertyKey = T extends unknown ? keyof T : never,
+> = T extends unknown ? T & Partial<Record<Exclude<K, keyof T>, never>> : never
+
 type Issues<T> = {
-  [Key in keyof T]?: T[Key] extends object ? Issues<T[Key]> : string[]
+  [Key in keyof Combine<T>]?: Combine<T>[Key] extends object
+    ? Issues<Combine<T>[Key]>
+    : string[]
 }
 
 export function useValidation<T extends Data>(
-  data: MaybeRef<T>,
+  data: MaybeRefOrGetter<T>,
   schema: StandardSchemaV1<T>,
 ) {
   const issues = reactive<Issues<T>>({})
@@ -18,7 +25,7 @@ export function useValidation<T extends Data>(
    * Validation errors found will be stored in the `issues` object.
    */
   async function validate(): Promise<boolean> {
-    const value = unref(data)
+    const value = toValue(data)
     const result = await schema['~standard'].validate(value)
 
     clearIssues()
