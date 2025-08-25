@@ -16,17 +16,20 @@ export function useValidation<T extends Record<string, unknown>>(data: MaybeRef<
 
     if (!result.issues) return true
 
-    result.issues.forEach(({ path, message }) => {
-      if (!path) return
+    for (const { path, message } of result.issues) {
+      if (!path) continue
 
       // Build nested object structure from path: ['user', 'address', 'street'] creates issues.user.address
-      const container = path.slice(0, -1).reduce((currentLevel, key) => (currentLevel[String(key)] ??= {}), issues)
+      let currentLevel = issues
+      for (const key of path.slice(0, -1)) {
+        currentLevel[String(key)] ??= {}
+        currentLevel = currentLevel[String(key)]
+      }
 
-      // Store issues at the final key ('street' in the above example)
-      const finalKey = String(path.at(-1))
-      const fieldIssues = (container[finalKey] ??= [])
+      // Store issues at the final level ('street' in the above example)
+      const fieldIssues = (currentLevel[String(path.at(-1))] ??= [])
       fieldIssues.push(message)
-    })
+    }
 
     return false
   }
