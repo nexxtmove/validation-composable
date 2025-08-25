@@ -4,6 +4,10 @@ Lightweight, practical validation for Vue. [Only 40 lines of code](https://githu
 
 🔌 Works with [Zod](https://www.npmjs.com/package/zod), [Yup](https://www.npmjs.com/package/yup), [Valibot](https://www.npmjs.com/package/valibot), and any other [Standard Schema](https://standardschema.dev/) library.
 
+<a href="https://www.npmjs.com/package/validation-composable" target="_blank"><img src="https://img.shields.io/npm/v/validation-composable?style=flat-square&color=%234c1" alt="Version"></a>
+<a href="https://www.npmjs.com/package/validation-composable" target="_blank"><img src="https://img.shields.io/npm/l/validation-composable?style=flat-square&color=%234c1" alt="License"></a>
+<a href="https://github.com/nexxtmove/validation-composable/actions" target="_blank"><img src="https://img.shields.io/github/actions/workflow/status/nexxtmove/validation-composable/test.yml?label=tests&style=flat-square&color=%234c1" alt="Tests"></a>
+
 ## Installation
 
 ```bash
