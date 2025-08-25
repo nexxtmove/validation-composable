@@ -19,7 +19,7 @@ export function useValidation<T extends Record<string, unknown>>(data: MaybeRef<
     for (const { path, message } of result.issues) {
       if (!path) continue
 
-      // Build nested object structure from path: ['user', 'address', 'street'] creates issues.user.address
+      // Create nesting: ['user', 'address', 'street'] creates issues.user.address
       let currentLevel = issues
       for (const key of path.slice(0, -1)) {
         currentLevel[String(key)] ??= {}
