@@ -342,6 +342,25 @@ describe('useValidation', () => {
       expect(isValid).toBe(false)
       expect(issues.a?.b?.c?.d?.e).toBeDefined()
     })
+
+    it('should work with getter functions', async () => {
+      const schema = z.object({
+        username: z.string().min(3),
+      })
+
+      let value = { username: 'ab' } // Invalid
+      const getter = () => value
+
+      const { validate, issues } = useValidation(getter, schema)
+      let isValid = await validate()
+      expect(isValid).toBe(false)
+      expect(issues.username).toBeDefined()
+
+      value = { username: 'validUser' } // Valid
+      isValid = await validate()
+      expect(isValid).toBe(true)
+      expect(Object.keys(issues)).toHaveLength(0)
+    })
   })
 
   describe('type safety', () => {

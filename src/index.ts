@@ -1,17 +1,17 @@
 import type { StandardSchemaV1 } from '@standard-schema/spec'
-import { reactive, watch, unref, type MaybeRef } from 'vue'
+import { reactive, watch, toValue, type MaybeRefOrGetter } from 'vue'
 
 type Issues<T> = {
   [Key in keyof T]?: T[Key] extends object ? Issues<T[Key]> : string[]
 }
 
-export function useValidation<T extends Record<string, unknown>>(data: MaybeRef<T>, schema: StandardSchemaV1<T>) {
+export function useValidation<T extends Record<string, unknown>>(data: MaybeRefOrGetter<T>, schema: StandardSchemaV1<T>) {
   const issues = reactive<Issues<T>>({})
 
   const clearIssues = () => Object.keys(issues).forEach((key) => delete issues[key])
 
   const validate = async () => {
-    const result = await schema['~standard'].validate(unref(data))
+    const result = await schema['~standard'].validate(toValue(data))
     clearIssues()
 
     if (!result.issues) return true
