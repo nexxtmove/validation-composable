@@ -1,6 +1,6 @@
 # ✅ Validation Composable
 
-Lightweight, practical validation for Vue. [Only 80 lines of code](https://github.com/nexxtmove/validation-composable/blob/main/src/index.ts). No special components to wrap your forms. No proprietary schema syntax to learn. Just bring your favorite schema library and go.
+Lightweight, practical validation for Vue. [Only 40 lines of code](https://github.com/nexxtmove/validation-composable/blob/main/src/index.ts). No special components to wrap your forms. No proprietary schema syntax to learn. Just bring your favorite schema library and go.
 
 🔌 Works with [Zod](https://www.npmjs.com/package/zod), [Yup](https://www.npmjs.com/package/yup), [Valibot](https://www.npmjs.com/package/valibot), and any other [Standard Schema](https://standardschema.dev/) library.
 

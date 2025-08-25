@@ -495,12 +495,8 @@ describe('useValidation', () => {
       expect(issues.password?.length).toBeGreaterThan(0)
 
       // Check that multiple error messages are captured for password
-      expect(issues.password).toContain(
-        'Password must be at least 8 characters',
-      )
-      expect(issues.password).toContain(
-        'Password must contain an uppercase letter',
-      )
+      expect(issues.password).toContain('Password must be at least 8 characters')
+      expect(issues.password).toContain('Password must contain an uppercase letter')
     })
 
     it('should capture error messages for nested objects', async () => {
@@ -512,9 +508,7 @@ describe('useValidation', () => {
           }),
           contact: z.object({
             email: z.string().email('Invalid email format'),
-            phone: z
-              .string()
-              .min(10, 'Phone number must be at least 10 digits'),
+            phone: z.string().min(10, 'Phone number must be at least 10 digits'),
           }),
         }),
       })
@@ -538,14 +532,10 @@ describe('useValidation', () => {
       expect(isValid).toBe(false)
 
       // Check nested error messages
-      expect(issues.user?.profile?.firstName?.[0]).toBe(
-        'First name is required',
-      )
+      expect(issues.user?.profile?.firstName?.[0]).toBe('First name is required')
       expect(issues.user?.profile?.lastName?.[0]).toBe('Last name is required')
       expect(issues.user?.contact?.email?.[0]).toBe('Invalid email format')
-      expect(issues.user?.contact?.phone?.[0]).toBe(
-        'Phone number must be at least 10 digits',
-      )
+      expect(issues.user?.contact?.phone?.[0]).toBe('Phone number must be at least 10 digits')
     })
 
     it('should capture error messages for array items', async () => {
@@ -553,9 +543,7 @@ describe('useValidation', () => {
         items: z
           .array(
             z.object({
-              name: z
-                .string()
-                .min(2, 'Item name must be at least 2 characters'),
+              name: z.string().min(2, 'Item name must be at least 2 characters'),
               price: z.number().min(0, 'Price must be positive'),
             }),
           )

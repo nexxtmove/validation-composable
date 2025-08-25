@@ -1,76 +1,37 @@
 import type { StandardSchemaV1 } from '@standard-schema/spec'
 import { reactive, watch, unref, type MaybeRef } from 'vue'
 
-type Data = Record<string, unknown>
-
 type Issues<T> = {
   [Key in keyof T]?: T[Key] extends object ? Issues<T[Key]> : string[]
 }
 
-export function useValidation<T extends Data>(
-  data: MaybeRef<T>,
-  schema: StandardSchemaV1<T>,
-) {
+export function useValidation<T extends Record<string, unknown>>(data: MaybeRef<T>, schema: StandardSchemaV1<T>) {
   const issues = reactive<Issues<T>>({})
 
-  /**
-   * Validate the data against the schema.
-   * Validation errors found will be stored in the `issues` object.
-   */
-  async function validate(): Promise<boolean> {
-    const value = unref(data)
-    const result = await schema['~standard'].validate(value)
+  const clearIssues = () => Object.keys(issues).forEach((key) => delete issues[key])
 
+  const validate = async () => {
+    const result = await schema['~standard'].validate(unref(data))
     clearIssues()
 
-    if (!result.issues) {
-      return true
-    }
+    if (!result.issues) return true
 
-    for (const issue of result.issues) {
-      if (!issue.path) continue
+    result.issues.forEach(({ path, message }) => {
+      if (!path) return
 
-      const leadingPath = issue.path.slice(0, -1)
-      const finalProperty = issue.path[issue.path.length - 1]
+      // Build nested object structure from path: ['user', 'address', 'street'] creates issues.user.address
+      const container = path.slice(0, -1).reduce((currentLevel, key) => (currentLevel[String(key)] ??= {}), issues)
 
-      let current = issues
-
-      // Create a nested object from the path
-      for (const property of leadingPath) {
-        const key = String(property)
-
-        current[key] ??= {}
-        current = current[key] // Set `current` to next nesting level, so the next property will be nested.
-      }
-
-      // Add the issue to the current nested object
-      const finalKey = String(finalProperty)
-      current[finalKey] ??= []
-      current[finalKey].push(issue.message)
-    }
+      // Store issues at the final key ('street' in the above example)
+      const finalKey = String(path.at(-1))
+      const fieldIssues = (container[finalKey] ??= [])
+      fieldIssues.push(message)
+    })
 
     return false
   }
 
-  /**
-   * Clear validation issues.
-   */
-  function clearIssues() {
-    for (const key of Object.keys(issues)) {
-      delete issues[key]
-    }
-  }
-
-  /**
-   * Validate only if there are issues.
-   */
-  async function revalidate() {
-    if (Object.keys(issues).length) {
-      await validate()
-    }
-  }
-
-  watch(data, revalidate)
+  watch(data, () => Object.keys(issues).length && validate())
 
   return { validate, issues, clearIssues }
 }
