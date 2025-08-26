@@ -22,8 +22,7 @@ export function useValidation<T extends Record<string, unknown>>(data: MaybeRefO
       // Create nesting: ['user', 'address', 'street'] creates issues.user.address
       let currentLevel = issues
       for (const key of path.slice(0, -1)) {
-        currentLevel[String(key)] ??= {}
-        currentLevel = currentLevel[String(key)]
+        currentLevel = currentLevel[String(key)] ??= {}
       }
 
       // Store issues at the final level ('street' in the above example)
