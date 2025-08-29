@@ -1,9 +1,9 @@
 import type { StandardSchemaV1 } from '@standard-schema/spec'
-import type { Object, Issues } from './types'
+import type { AnyRecord, Issues } from './types'
 import { reactive, watch, toValue, type MaybeRefOrGetter } from 'vue'
 
-export function useValidation<TData extends Object, TSchema = TData>(data: MaybeRefOrGetter<TData>, schema: StandardSchemaV1<TSchema>) {
-  const issues = reactive<Issues<TData>>({})
+export function useValidation<T extends AnyRecord>(data: MaybeRefOrGetter<T>, schema: StandardSchemaV1<T>) {
+  const issues = reactive<Issues<T>>({})
 
   const clearIssues = () => Object.keys(issues).forEach((key) => delete issues[key])
 

@@ -398,6 +398,34 @@ describe('useValidation', () => {
       expect(issues.address?.street).toBeDefined()
       expect(issues.address?.city).toBeDefined()
     })
+
+    it('should accept union typed data', async () => {
+      type Auth = { mode: 'login'; auth: { password: string } } | { mode: 'signup'; auth: { code: string } }
+
+      const loginSchema = z.object({
+        mode: z.literal('login'),
+        auth: z.object({
+          password: z.string().min(1, 'Password is required'),
+        }),
+      })
+
+      const signupSchema = z.object({
+        mode: z.literal('signup'),
+        auth: z.object({
+          code: z.string().length(6, 'Code is required'),
+        }),
+      })
+
+      const schema = z.discriminatedUnion('mode', [loginSchema, signupSchema])
+
+      const data = reactive<Auth>({ mode: 'login', auth: { password: '' } })
+
+      const { validate, issues } = useValidation(data, schema)
+      await validate()
+
+      expect(issues.auth?.password).toBeDefined()
+      expect(issues.auth?.code).not.toBeDefined()
+    })
   })
 
   describe('clearIssues function', () => {
