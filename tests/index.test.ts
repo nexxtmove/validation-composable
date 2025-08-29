@@ -393,13 +393,18 @@ describe('useValidation', () => {
       expect(issues.address?.city).toBeDefined()
     })
 
-    it('should accept union typed data', async () => {
-      type Auth = { mode: 'login'; auth: { password: string } } | { mode: 'signup'; auth: { code: string } }
+    it('should accept complex union typed data', async () => {
+      type Auth =
+        | { mode: 'login'; auth: { password: string; email: { address: string } } }
+        | { mode: 'signup'; auth: { code: string; provider: { id: string } } }
 
       const loginSchema = z.object({
         mode: z.literal('login'),
         auth: z.object({
           password: z.string().min(1, 'Password is required'),
+          email: z.object({
+            address: z.email('Invalid email address'),
+          }),
         }),
       })
 
@@ -407,18 +412,23 @@ describe('useValidation', () => {
         mode: z.literal('signup'),
         auth: z.object({
           code: z.string().length(6, 'Code is required'),
+          provider: z.object({
+            id: z.enum(['basic', 'oauth'], 'Invalid provider'),
+          }),
         }),
       })
 
       const schema = z.discriminatedUnion('mode', [loginSchema, signupSchema])
 
-      const data = reactive<Auth>({ mode: 'login', auth: { password: '' } })
+      const data = reactive<Auth>({ mode: 'login', auth: { password: '', email: { address: '' } } })
 
       const { validate, issues } = useValidation(data, schema)
       await validate()
 
       expect(issues.auth?.password).toBeDefined()
+      expect(issues.auth?.email?.address).toBeDefined()
       expect(issues.auth?.code).not.toBeDefined()
+      expect(issues.auth?.provider?.id).not.toBeDefined()
     })
   })
 
