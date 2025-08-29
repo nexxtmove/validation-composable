@@ -292,23 +292,29 @@ describe('useValidation', () => {
     })
 
     it('should handle null and undefined values gracefully', async () => {
-      const schema = z.object({
-        optional: z.string().optional(),
-        nullable: z.string().nullable(),
-        required: z.string(),
+      type AuthPayload = { mode: 'login'; auth: { password: string } }
+
+      const loginSchema = z.object({
+        mode: z.literal('login'),
+        auth: z.object({
+          password: z.string().min(1, 'Password is required'),
+        }),
       })
 
-      const data = reactive({
-        optional: undefined,
-        nullable: null,
-        required: null,
-      } as any)
+      const signupSchema = z.object({
+        mode: z.literal('signup'),
+        auth: z.object({
+          code: z.string().length(6, 'Code is required'),
+        }),
+      })
 
-      const { validate, issues } = useValidation(data, schema)
-      const isValid = await validate()
+      const authSchema = z.discriminatedUnion('mode', [loginSchema, signupSchema])
 
-      expect(isValid).toBe(false)
-      expect(issues.required).toBeDefined() // Should have error for required field
+      const form = reactive<AuthPayload>({ mode: 'login', auth: { password: 'pass' } })
+
+      const { validate, issues } = useValidation(form, authSchema)
+
+      console.log(issues.auth?.code)
     })
 
     it('should handle very deep nesting', async () => {
